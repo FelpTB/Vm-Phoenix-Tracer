@@ -1,7 +1,0 @@
-bash -c "pip install --upgrade pip && pip install vllm && python3 -m vllm.entrypoints.openai.api_server --host 0.0.0.0 --port 8000 --model mistralai/Ministral-3-3B-Instruct-2512 --dtype bfloat16 --gpu-memory-utilization 0.95 --max-model-len 32000 --kv-cache-dtype fp8 --enforce-eager --trust-remote-code"
-
-env:
-
-VLLM_API_KEY=buscafornecedor
-PUBLIC_KEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA1ivVVXWdIaHUI17hOPwKZuA/CYu17OTFNgri0+WS21 runpod
-HF_TOKEN=<SEU_HF_TOKEN_AQUI>

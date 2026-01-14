@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "vm-phoenix-tracer-api",
+		"name": "vLLM Phoenix API",
+		"description": "Coleção de requisições para testar a API vLLM + Phoenix",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/health",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Endpoint para verificar se a API está funcionando"
+			},
+			"response": []
+		},
+		{
+			"name": "Root - Informações da API",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Endpoint raiz com informações sobre a API"
+			},
+			"response": []
+		},
+		{
+			"name": "Chat Completion - Básico",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"model\": \"mistralai/Ministral-3-3B-Instruct-2512\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Explique o que é Python em uma frase.\"\n    }\n  ],\n  \"temperature\": 0.7\n}"
+				},
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/v1/chat/completions",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"v1",
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Requisição básica de chat completion"
+			},
+			"response": []
+		},
+		{
+			"name": "Chat Completion - Com max_tokens",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"model\": \"mistralai/Ministral-3-3B-Instruct-2512\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Explique o que é inteligência artificial.\"\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 200\n}"
+				},
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/v1/chat/completions",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"v1",
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Chat completion com limite de tokens"
+			},
+			"response": []
+		},
+		{
+			"name": "Chat Completion - Conversação",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"model\": \"mistralai/Ministral-3-3B-Instruct-2512\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Qual é a capital do Brasil?\"\n    },\n    {\n      \"role\": \"assistant\",\n      \"content\": \"A capital do Brasil é Brasília.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Qual é a população aproximada dessa cidade?\"\n    }\n  ],\n  \"temperature\": 0.7\n}"
+				},
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/v1/chat/completions",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"v1",
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Chat completion com histórico de conversa"
+			},
+			"response": []
+		},
+		{
+			"name": "Chat Completion - Alta Temperatura (Criativo)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"model\": \"mistralai/Ministral-3-3B-Instruct-2512\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Crie uma história curta sobre um robô que aprende a sonhar.\"\n    }\n  ],\n  \"temperature\": 0.9,\n  \"max_tokens\": 300\n}"
+				},
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/v1/chat/completions",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"v1",
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Chat completion com temperatura alta para respostas mais criativas"
+			},
+			"response": []
+		},
+		{
+			"name": "Chat Completion - Com System Message",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"model\": \"mistralai/Ministral-3-3B-Instruct-2512\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é um assistente útil e educado que responde em português brasileiro.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Me explique o que é machine learning.\"\n    }\n  ],\n  \"temperature\": 0.7\n}"
+				},
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/v1/chat/completions",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"v1",
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Chat completion com mensagem de sistema para definir comportamento"
+			},
+			"response": []
+		},
+		{
+			"name": "Chat Completion - Erro (sem messages)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"model\": \"mistralai/Ministral-3-3B-Instruct-2512\",\n  \"temperature\": 0.7\n}"
+				},
+				"url": {
+					"raw": "https://vm-phoenix-tracer-buscafornecedor.up.railway.app/v1/chat/completions",
+					"protocol": "https",
+					"host": [
+						"vm-phoenix-tracer-buscafornecedor",
+						"up",
+						"railway",
+						"app"
+					],
+					"path": [
+						"v1",
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Teste de erro - requisição sem campo messages (deve retornar 400)"
+			},
+			"response": []
+		}
+	]
+}
