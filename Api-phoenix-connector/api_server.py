@@ -1,6 +1,11 @@
 """
 API Flask para repassar requisições do n8n para o vLLM com instrumentação Phoenix.
-Processamento assíncrono: retorna imediatamente e processa em background.
+
+MODO ASSÍNCRONO:
+- Endpoint /v1/chat/completions retorna 202 Accepted IMEDIATAMENTE
+- Processamento (chamada vLLM + salvamento PostgreSQL) acontece em background
+- Cliente NÃO espera o resultado da inferência
+- Resultados são salvos na tabela busca_fornecedor.result_vllm_test
 """
 import os
 import json
@@ -276,6 +281,11 @@ def chat_completions():
     Retorna imediatamente (202 Accepted) e processa em background.
     Compatível com a API OpenAI/vLLM.
     """
+    # Log imediato para confirmar que a função foi chamada
+    print("=" * 80)
+    print("[ENTRADA] Endpoint /v1/chat/completions chamado - MODO ASSÍNCRONO")
+    print("=" * 80)
+    
     try:
         # Obter dados da requisição
         data = request.get_json()
@@ -316,10 +326,12 @@ def chat_completions():
         )
         thread.daemon = True  # Thread morre quando o processo principal morre
         
-        # Iniciar thread ANTES de retornar resposta
+        # IMPORTANTE: Iniciar thread ANTES de retornar resposta
+        # Isso garante que o processamento acontece em background
         thread.start()
         
         print(f"[ACEITO {request_timestamp}] Requisição aceita e sendo processada em background. Thread ID: {thread.ident}")
+        print(f"[INFO] Thread iniciada. Retornando resposta 202 imediatamente...")
         
         # Retornar imediatamente (ANTES de qualquer processamento)
         # Esta resposta deve ser enviada imediatamente, sem esperar o processamento
@@ -330,8 +342,13 @@ def chat_completions():
             "accepted_at": request_timestamp
         }
         
-        print(f"[RESPOSTA {request_timestamp}] Enviando resposta 202 Accepted imediatamente...")
-        return jsonify(response_data), 202
+        print(f"[RESPOSTA {request_timestamp}] Enviando resposta 202 Accepted IMEDIATAMENTE (sem esperar vLLM)...")
+        print("=" * 80)
+        
+        # FORÇAR retorno imediato - não esperar nada
+        response = jsonify(response_data)
+        response.status_code = 202
+        return response
         
     except Exception as e:
         error_msg = str(e)
