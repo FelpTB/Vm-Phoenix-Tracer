@@ -5,6 +5,8 @@ Processamento assíncrono: retorna imediatamente e processa em background.
 import os
 import json
 import threading
+import time
+from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from typing import Optional, Dict, Any, List
@@ -133,6 +135,10 @@ def process_request_async(request_data: Dict[str, Any]):
     Processa a requisição de forma assíncrona em background.
     Faz a chamada ao vLLM e salva os resultados no PostgreSQL.
     """
+    thread_id = threading.current_thread().ident
+    thread_name = threading.current_thread().name
+    print(f"[THREAD {thread_id}] Iniciando processamento assíncrono em thread: {thread_name}")
+    
     try:
         # Preparar dados de entrada para salvar
         vllm_input_json = json.dumps(request_data, ensure_ascii=False, indent=2)
@@ -293,17 +299,39 @@ def chat_completions():
                 }
             }), 400
         
+        # Timestamp para confirmar resposta imediata
+        request_timestamp = datetime.now().isoformat()
+        
+        # Log para confirmar que está recebendo a requisição
+        print(f"[RECEBIDO {request_timestamp}] Nova requisição recebida. Iniciando processamento assíncrono...")
+        
+        # Criar uma cópia dos dados para evitar problemas de referência
+        request_data_copy = json.loads(json.dumps(data))
+        
         # Processar em background (thread)
-        thread = threading.Thread(target=process_request_async, args=(data,))
+        thread = threading.Thread(
+            target=process_request_async, 
+            args=(request_data_copy,),
+            name=f"vllm-process-{int(time.time() * 1000)}"
+        )
         thread.daemon = True  # Thread morre quando o processo principal morre
+        
+        # Iniciar thread ANTES de retornar resposta
         thread.start()
         
-        # Retornar imediatamente
-        return jsonify({
+        print(f"[ACEITO {request_timestamp}] Requisição aceita e sendo processada em background. Thread ID: {thread.ident}")
+        
+        # Retornar imediatamente (ANTES de qualquer processamento)
+        # Esta resposta deve ser enviada imediatamente, sem esperar o processamento
+        response_data = {
             "status": "accepted",
             "message": "Request received and is being processed asynchronously",
-            "object": "chat.completion.accepted"
-        }), 202
+            "object": "chat.completion.accepted",
+            "accepted_at": request_timestamp
+        }
+        
+        print(f"[RESPOSTA {request_timestamp}] Enviando resposta 202 Accepted imediatamente...")
+        return jsonify(response_data), 202
         
     except Exception as e:
         error_msg = str(e)
